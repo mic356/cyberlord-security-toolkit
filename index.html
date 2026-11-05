@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A browser-based cybersecurity toolkit for learning and basic security checks.">
+<title>CyberLord Security Toolkit</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d30;--panel2:#17253b;--text:#eaf1fb;--muted:#a8b7cc;--line:#2a3a53;--accent:#36d399;--warn:#f5c451;--bad:#fb7185}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#08111e,#101d30);color:var(--text);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{padding:30px 20px 22px;border-bottom:1px solid var(--line);background:#0b1423}
+.wrap{max-width:1050px;margin:auto}header .tag{color:var(--accent);font-size:.78rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+h1{margin:6px 0;font-size:clamp(1.8rem,4vw,2.6rem)}header p{margin:5px 0;color:var(--muted);max-width:720px}
+main{padding:24px 20px 50px}.notice{border:1px solid #66532a;background:#2b2516;color:#f8e7b6;padding:12px 14px;border-radius:12px;margin-bottom:20px;font-size:.92rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,310px),1fr));gap:16px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:19px;min-width:0}
+.card h2{font-size:1.13rem;margin:0 0 5px}.desc{color:var(--muted);font-size:.9rem;margin:0 0 15px}
+label{display:block;font-size:.9rem;font-weight:650;margin:12px 0 6px}
+input,textarea,select{width:100%;background:#0b1423;border:1px solid #354762;border-radius:9px;padding:11px 12px;color:var(--text);font:inherit;min-width:0}
+textarea{min-height:90px;resize:vertical}button{border:0;border-radius:9px;padding:10px 14px;background:var(--accent);color:#062218;font-weight:800;cursor:pointer;margin-top:10px}
+button.secondary{background:#263a55;color:var(--text)}button:focus,input:focus,textarea:focus{outline:2px solid var(--accent);outline-offset:2px}
+.row{display:flex;gap:8px;flex-wrap:wrap}.row button{flex:0 0 auto}
+.output{margin-top:12px;padding:12px;background:#0a1422;border:1px solid var(--line);border-radius:9px;white-space:pre-wrap;overflow-wrap:anywhere;color:#d7e6f7;min-height:42px;font-size:.9rem}
+.meter{height:8px;background:#26364c;border-radius:20px;margin-top:10px;overflow:hidden}.meter span{display:block;height:100%;width:0;background:var(--bad);transition:width .2s}
+.small{font-size:.82rem;color:var(--muted)}footer{border-top:1px solid var(--line);padding:18px 20px;color:var(--muted);font-size:.85rem}
+a{color:var(--accent)}
+</style>
+</head>
+<body>
+<header><div class="wrap">
+<div class="tag">CyberLord • Learning Project</div>
+<h1>Security Toolkit</h1>
+<p>Simple browser-based tools for cybersecurity learning, defensive checks, and safe experimentation.</p>
+</div></header>
+<main class="wrap">
+<div class="notice"><strong>Use responsibly:</strong> Only test systems, URLs, and networks you own or have explicit permission to assess. This toolkit does not perform port scans, exploit systems, or guarantee that a URL is safe.</div>
+<div class="grid">
+<section class="card">
+<h2>🔐 Password strength checker</h2><p class="desc">Estimate password strength locally. Your password is not sent to a server.</p>
+<label for="pw">Enter a test password</label><input id="pw" type="password" autocomplete="off" placeholder="Type a password">
+<div class="meter"><span id="meter"></span></div><div id="pwresult" class="output" aria-live="polite">Your assessment will appear here.</div>
+<div class="row"><button id="togglePw" class="secondary" type="button">Show password</button><button id="clearPw" class="secondary" type="button">Clear</button></div>
+</section>
+<section class="card">
+<h2>#️⃣ Hash generator</h2><p class="desc">Generate SHA-256 or SHA-512 hashes using your browser's Web Crypto API.</p>
+<label for="hashInput">Text to hash</label><textarea id="hashInput" placeholder="Enter text here"></textarea>
+<label for="hashAlgo">Algorithm</label><select id="hashAlgo"><option>SHA-256</option><option>SHA-512</option></select>
+<button id="hashBtn" type="button">Generate hash</button><div id="hashOut" class="output" aria-live="polite">Hash output will appear here.</div>
+</section>
+<section class="card">
+<h2>🌐 IP information lookup</h2><p class="desc">Look up public IP details using a third-party IP information service.</p>
+<label for="ipInput">IP address (optional)</label><input id="ipInput" placeholder="Leave blank to check your public IP">
+<button id="ipBtn" type="button">Look up IP</button><div id="ipOut" class="output" aria-live="polite">Lookup results will appear here.</div>
+<p class="small">This lookup sends the entered IP to ipapi.co. Do not enter private or sensitive information.</p>
+</section>
+<section class="card">
+<h2>🔎 URL security quick check</h2><p class="desc">Checks basic URL characteristics locally. It is not a malware or vulnerability scanner.</p>
+<label for="urlInput">Website URL</label><input id="urlInput" placeholder="https://example.com">
+<button id="urlBtn" type="button">Check URL</button><div id="urlOut" class="output" aria-live="polite">Results will appear here.</div>
+</section>
+<section class="card">
+<h2>🚪 Common port reference</h2><p class="desc">Learn what commonly used network ports are associated with.</p>
+<label for="portInput">Enter a port number (1–65535)</label><input id="portInput" type="number" min="1" max="65535" placeholder="e.g. 443">
+<button id="portBtn" type="button">Identify port</button><div id="portOut" class="output" aria-live="polite">Port information will appear here.</div>
+</section>
+<section class="card">
+<h2>🛡️ HTTP security header guide</h2><p class="desc">A quick reference for headers you may encounter during an authorized web assessment.</p>
+<div class="output">Strict-Transport-Security (HSTS): encourages HTTPS connections.
+Content-Security-Policy (CSP): restricts permitted content sources.
+X-Content-Type-Options: nosniff: helps prevent MIME-type sniffing.
+X-Frame-Options: helps control framing by other sites.
+Referrer-Policy: controls referrer information sent by browsers.
+Permissions-Policy: controls access to selected browser features.</div>
+<p class="small">A missing header is not automatically proof of an exploitable vulnerability. Review the application's context.</p>
+</section>
+</div>
+</main>
+<footer><div class="wrap">CyberLord Security Toolkit • Educational use • Version 1.0</div></footer>
+<script>
+const $ = id => document.getElementById(id);
+const ports = {
+20:"FTP data",21:"FTP control",22:"SSH (secure remote login)",23:"Telnet (unencrypted remote login)",25:"SMTP (mail transfer)",53:"DNS",67:"DHCP server",68:"DHCP client",80:"HTTP (unencrypted web traffic)",110:"POP3",123:"NTP (time synchronisation)",143:"IMAP",161:"SNMP",389:"LDAP",443:"HTTPS (encrypted web traffic)",445:"SMB (Windows file sharing)",465:"SMTP over implicit TLS",587:"SMTP submission",993:"IMAPS",995:"POP3S",1433:"Microsoft SQL Server",1521:"Oracle Database",3306:"MySQL",3389:"RDP (Remote Desktop Protocol)",5432:"PostgreSQL",5900:"VNC",6379:"Redis",8080:"Common alternate HTTP / web proxy",8443:"Common alternate HTTPS"
+};
+$('pw').addEventListener('input',()=>{
+ const p=$('pw').value; let score=0; const tips=[];
+ if(p.length>=12)score++;else tips.push("Use at least 12 characters.");
+ if(/[a-z]/.test(p)&&/[A-Z]/.test(p))score++;else tips.push("Mix uppercase and lowercase letters.");
+ if(/\d/.test(p))score++;else tips.push("Add numbers.");
+ if(/[^A-Za-z0-9]/.test(p))score++;else tips.push("Add symbols.");
+ if(p.length>=16)score++;
+ const labels=["Very weak","Weak","Fair","Good","Strong","Very strong"];
+ $('meter').style.width=(score/5*100)+"%";
+ $('meter').style.background=score<2?"#fb7185":score<4?"#f5c451":"#36d399";
+ $('pwresult').textContent=p.length?labels[score]+(tips.length?"\n"+tips.join("\n"):"\nGood length and character variety. Avoid reusing passwords."):"Enter a password to begin.";
+});
+$('togglePw').addEventListener('click',()=>{const p=$('pw');p.type=p.type==="password"?"text":"password";$('togglePw').textContent=p.type==="password"?"Show password":"Hide password";});
+$('clearPw').addEventListener('click',()=>{$('pw').value="";$('pw').dispatchEvent(new Event('input'));});
+$('hashBtn').addEventListener('click',async()=>{
+ const out=$('hashOut');const value=$('hashInput').value;
+ if(!value){out.textContent="Enter some text first.";return;}
+ if(!crypto.subtle){out.textContent="Web Crypto is unavailable. Open this page on HTTPS or localhost.";return;}
+ try{const bytes=new TextEncoder().encode(value);const digest=await crypto.subtle.digest($('hashAlgo').value,bytes);out.textContent=Array.from(new Uint8Array(digest),b=>b.toString(16).padStart(2,'0')).join('');}
+ catch(e){out.textContent="Could not generate hash: "+e.message;}
+});
+$('ipBtn').addEventListener('click',async()=>{
+ const out=$('ipOut'),ip=$('ipInput').value.trim();
+ if(ip&&!/^[0-9a-fA-F:.]+$/.test(ip)){out.textContent="Enter a valid-looking IPv4 or IPv6 address.";return;}
+ out.textContent="Looking up…";
+ try{const url=ip?"https://ipapi.co/"+encodeURIComponent(ip)+"/json/":"https://ipapi.co/json/";const r=await fetch(url);if(!r.ok)throw Error("Lookup service returned HTTP "+r.status);const d=await r.json();if(d.error)throw Error(d.reason||"Lookup failed");
+ out.textContent=["IP: "+(d.ip||"Unknown"),"City: "+(d.city||"Unknown"),"Region: "+(d.region||"Unknown"),"Country: "+(d.country_name||"Unknown"),"Network/ISP: "+(d.org||"Unknown"),"ASN: "+(d.asn||"Unknown")].join("\n");}
+ catch(e){out.textContent="Lookup failed. Check your connection or try again later. ("+e.message+")";}
+});
+$('urlBtn').addEventListener('click',()=>{
+ const out=$('urlOut'),raw=$('urlInput').value.trim();if(!raw){out.textContent="Enter a URL first.";return;}
+ try{const u=new URL(raw);if(!["http:","https:"].includes(u.protocol))throw Error("Only HTTP and HTTPS URLs are supported.");
+ const notes=[];notes.push("Protocol: "+u.protocol.replace(":","").toUpperCase());
+ notes.push("Hostname: "+u.hostname);
+ notes.push(u.protocol==="https:"?"HTTPS is used.":"Warning: HTTP does not encrypt traffic.");
+ if(u.username||u.password)notes.push("Warning: URL contains embedded credentials.");
+ if(u.hostname.includes("xn--"))notes.push("Note: hostname uses internationalised/punycode encoding; verify it carefully.");
+ if(/^\d{1,3}(\.\d{1,3}){3}$/.test(u.hostname))notes.push("Note: URL uses an IPv4 address instead of a domain name.");
+ if(u.hostname.split(".").some(x=>x.length>30))notes.push("Note: unusually long hostname label; inspect carefully.");
+ notes.push("This is only a basic format check. It does not check reputation, malware, certificates, or server vulnerabilities.");
+ out.textContent=notes.join("\n");
+ }catch(e){out.textContent="Invalid URL: "+e.message;}
+});
+$('portBtn').addEventListener('click',()=>{
+ const n=Number($('portInput').value);if(!Number.isInteger(n)||n<1||n>65535){$('portOut').textContent="Enter a whole number from 1 to 65535.";return;}
+ $('portOut').textContent="Port "+n+": "+(ports[n]||"No common service is listed in this small reference. Port assignments do not prove which service is running.");
+});
+</script>
+</body>
+</html>
